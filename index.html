@@ -2,91 +2,251 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <title>Portofoliu Investiții</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portofoliu Investițional 2024-2040</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .sticky-col { position: sticky; left: 0; background: white; z-index: 10; border-right: 2px solid #e2e8f0; }
+        .month-input { width: 80px; text-align: right; font-size: 12px; padding: 2px; border: 1px solid #f0f0f0; }
+        .year-header { background: #1e293b; color: white; text-align: center; border: 1px solid #334155; }
+        .table-container { overflow-x: auto; max-height: 70vh; }
+        ::-webkit-scrollbar { height: 10px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 5px; }
+    </style>
 </head>
-<body class="bg-slate-50 p-4 md:p-10 font-sans">
-    <div class="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
-        <div class="flex justify-between items-center mb-10">
-            <h1 class="text-3xl font-extrabold text-slate-800">📈 Portofoliul Meu</h1>
-            <div id="total" class="text-2xl font-bold text-blue-600 bg-blue-50 px-6 py-2 rounded-full">0 MDL</div>
-        </div>
+<body class="bg-slate-50">
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
-            <div class="p-4 border rounded-xl">
-                <p class="text-xs text-slate-400 uppercase font-bold">1 EUR (MDL)</p>
-                <input type="number" id="eur" value="19.72" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
-            </div>
-            <div class="p-4 border rounded-xl">
-                <p class="text-xs text-slate-400 uppercase font-bold">1 USD (MDL)</p>
-                <input type="number" id="usd" value="16.69" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
-            </div>
-            <div class="p-4 border rounded-xl">
-                <p class="text-xs text-slate-400 uppercase font-bold">1 RON (MDL)</p>
-                <input type="number" id="ron" value="3.88" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
+    <!-- HEADER CURS VALUTAR -->
+    <header class="bg-white border-b p-4 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-[1800px] mx-auto flex flex-wrap justify-between items-center gap-4">
+            <h1 class="text-xl font-bold text-slate-800">Portofoliu Investițional Personal</h1>
+            <div class="flex gap-4 text-sm">
+                <div class="bg-blue-50 p-2 rounded">EUR: <input type="number" id="cEUR" value="19.7215" class="w-20 bg-transparent font-bold" oninput="updateAll()"></div>
+                <div class="bg-green-50 p-2 rounded">USD: <input type="number" id="cUSD" value="16.6933" class="w-20 bg-transparent font-bold" oninput="updateAll()"></div>
+                <div class="bg-yellow-50 p-2 rounded">RON: <input type="number" id="cRON" value="3.8863" class="w-20 bg-transparent font-bold" oninput="updateAll()"></div>
+                <div class="bg-slate-800 text-white p-2 rounded">TOTAL: <span id="grandTotalMDL" class="font-bold">0</span> MDL</div>
             </div>
         </div>
+    </nav>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
-            <div>
-                <table class="w-full text-left">
-                    <thead class="text-slate-400 text-xs uppercase">
-                        <tr><th class="pb-4">Activ</th><th class="pb-4">Valută</th><th class="pb-4">Suma</th></tr>
-                    </thead>
-                    <tbody id="lista" class="text-slate-700">
-                        <!-- Randurile vor fi generate automat -->
-                    </tbody>
-                </table>
+    <!-- NAVIGARE SHEET-URI -->
+    <div class="max-w-[1800px] mx-auto px-4 mt-4">
+        <div class="flex border-b border-gray-200 bg-white rounded-t-lg">
+            <button onclick="showTab('situatie')" class="tab-btn px-6 py-3 font-bold border-b-2 border-blue-600 text-blue-600">Situația la zi</button>
+            <button onclick="showTab('alocari')" class="tab-btn px-6 py-3 font-bold text-gray-500 hover:text-blue-600">Alocări Lunare (2024-2040)</button>
+            <button onclick="showTab('structura')" class="tab-btn px-6 py-3 font-bold text-gray-500 hover:text-blue-600">Structura Portofoliului</button>
+            <button onclick="showTab('setari')" class="tab-btn px-6 py-3 font-bold text-gray-500 hover:text-blue-600">Gestionare Instrumente</button>
+        </div>
+
+        <!-- TAB 1: SITUATIA LA ZI -->
+        <div id="tab-situatie" class="tab-content py-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white p-4 rounded-xl shadow-sm border">
+                    <h3 class="font-bold mb-4">Active Curente</h3>
+                    <div id="summaryTable" class="overflow-x-auto"></div>
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-sm border">
+                    <h3 class="font-bold mb-4 text-center">Distribuție Asset Allocation</h3>
+                    <canvas id="chartAllocation"></canvas>
+                </div>
             </div>
-            <div class="flex items-center justify-center">
-                <canvas id="grafic" style="max-height: 300px;"></canvas>
+        </div>
+
+        <!-- TAB 2: ALOCARI LUNARE (IDENTIC EXCEL) -->
+        <div id="tab-alocari" class="tab-content hidden py-6">
+            <div class="bg-white p-4 rounded-xl shadow-sm border">
+                <div class="flex justify-between mb-4">
+                    <h3 class="font-bold">Matrix Istoric Alocări (Sume în Valuta de Origine)</h3>
+                    <span class="text-xs text-gray-400 italic text-right">Derulează la dreapta pentru ani viitori -></span>
+                </div>
+                <div class="table-container">
+                    <table class="min-w-full border-collapse">
+                        <thead id="matrixHead"></thead>
+                        <tbody id="matrixBody"></tbody>
+                    </table>
+                </div>
             </div>
+        </div>
+
+        <!-- TAB 3: STRUCTURA (DETALIU) -->
+        <div id="tab-structura" class="tab-content hidden py-6">
+            <div id="analysisStats" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"></div>
         </div>
     </div>
 
     <script>
-        const active = [
-            {nume: "TVBETETF (BVB)", valuta: "RON", suma: 10204},
-            {nume: "SNP Petrom", valuta: "RON", suma: 0},
-            {nume: "S&P 500 (SXR8)", valuta: "EUR", suma: 500},
-            {nume: "Titluri Fidelis", valuta: "RON", suma: 2000},
-            {nume: "Bitcoin", valuta: "EUR", suma: 100},
-            {nume: "Cash (MDL)", valuta: "MDL", suma: 1000}
+        // LISTA IDENTICA CU EXCELUL TAU
+        const instruments = [
+            { id: 1, name: "FDI ETF BET PATRIA TRADEVILLE", symbol: "TVBETETF", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 2, name: "FONDUL PROPRIETATEA", symbol: "FP", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 3, name: "OMV PETROM S.A.", symbol: "SNP", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 4, name: "BANCA TRANSILVANIA", symbol: "TLV", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 5, name: "HIDROELECTRICA S.A.", symbol: "H2O", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 6, name: "S.N.G.N. ROMGAZ S.A.", symbol: "SNG", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 7, name: "BRD - GROUPE SOCIETE GENERALE", symbol: "BRD", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 8, name: "Premier Energy", symbol: "PE", type: "Acțiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 9, name: "Titluri stat Fidelis R2512A", symbol: "R2512A", type: "Obligațiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 10, name: "Titluri stat Fidelis R2612A", symbol: "R2612A", type: "Obligațiuni", bursa: "BVB", currency: "RON", isin: "x" },
+            { id: 11, name: "Titluri stat Fidelis R2908AE", symbol: "R2908AE", type: "Obligațiuni", bursa: "BVB", currency: "EUR", isin: "x" },
+            { id: 12, name: "iShares S&P 500 (SXR8)", symbol: "SXR8.DE", type: "Acțiuni", bursa: "Frankfurt", currency: "EUR", isin: "IE00B5BMR087" },
+            { id: 13, name: "iShares Physical Gold", symbol: "IGLN.UK", type: "Aur", bursa: "Londra", currency: "USD", isin: "IE00B4ND3602" },
+            { id: 14, name: "VanEck Bitcoin ETN", symbol: "VBTC", type: "Crypto", bursa: "Amsterdam", currency: "EUR", isin: "DE000A28M8D0" },
+            { id: 15, name: "Obligațiuni RM (Minister)", symbol: "MF RM", type: "Obligațiuni", bursa: "MF RM", currency: "MDL", isin: "x" }
         ];
 
-        let chart;
-        function calcul() {
-            const e = document.getElementById('eur').value;
-            const u = document.getElementById('usd').value;
-            const r = document.getElementById('ron').value;
-            let totalMDL = 0;
-            const tbody = document.getElementById('lista');
-            tbody.innerHTML = '';
-            
-            active.forEach((a, i) => {
-                let mdl = a.valuta=='RON'? a.suma*r : a.valuta=='EUR'? a.suma*e : a.valuta=='USD'? a.suma*u : a.suma;
-                totalMDL += mdl;
-                tbody.innerHTML += `<tr class="border-t"><td class="py-4 font-bold">${a.nume}</td><td>${a.valuta}</td>
-                <td><input type="number" value="${a.suma}" class="w-20 outline-none focus:bg-yellow-50" oninput="active[${i}].suma=this.value; calcul()"></td></tr>`;
-            });
+        // Ani: 2024 - 2040
+        const years = [];
+        for(let y=2024; y<=2040; y++) years.push(y);
+        const months = ["ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sept", "oct", "nov", "dec"];
 
-            document.getElementById('total').innerText = totalMDL.toLocaleString() + " MDL";
-            updateChart();
+        // State: Incarcare date salvate sau zero
+        let allocations = JSON.parse(localStorage.getItem('allocData')) || {};
+
+        let myChart;
+
+        function initMatrix() {
+            const head = document.getElementById('matrixHead');
+            const body = document.getElementById('matrixBody');
+
+            // Header - 2 rânduri (An și Lună)
+            let h1 = `<tr class="border-b"><th class="sticky-col p-2 text-left bg-slate-100 min-w-[200px]">Instrument / Perioada</th>`;
+            let h2 = `<tr class="border-b"><th class="sticky-col p-2 bg-slate-100 italic text-xs">Moneda originală</th>`;
+
+            years.forEach(y => {
+                h1 += `<th colspan="12" class="year-header">${y}</th>`;
+                months.forEach(m => {
+                    h2 += `<th class="p-1 text-[10px] bg-slate-50 border border-slate-200">${m}</th>`;
+                });
+            });
+            head.innerHTML = h1 + `</tr>` + h2 + `</tr>`;
+
+            // Body
+            let bHtml = '';
+            instruments.forEach(inst => {
+                bHtml += `<tr class="hover:bg-slate-50 border-b">
+                    <td class="sticky-col p-2 font-bold text-xs">
+                        ${inst.symbol} <span class="text-[9px] text-gray-400 font-normal">(${inst.currency})</span>
+                    </td>`;
+                years.forEach(y => {
+                    months.forEach(m => {
+                        const key = `${inst.id}-${y}-${m}`;
+                        const val = allocations[key] || '';
+                        bHtml += `<td class="p-0 border-r border-slate-100">
+                            <input type="number" step="any" class="month-input outline-none focus:bg-yellow-50" 
+                                   value="${val}" 
+                                   oninput="updateVal('${key}', this.value)">
+                        </td>`;
+                    });
+                });
+                bHtml += `</tr>`;
+            });
+            body.innerHTML = bHtml;
         }
 
-        function updateChart() {
-            const ctx = document.getElementById('grafic').getContext('2d');
-            if(chart) chart.destroy();
-            chart = new Chart(ctx, {
+        function updateVal(key, val) {
+            if(val === '' || val == 0) delete allocations[key];
+            else allocations[key] = parseFloat(val);
+            localStorage.setItem('allocData', JSON.stringify(allocations));
+            updateAll();
+        }
+
+        function updateAll() {
+            const ron = parseFloat(document.getElementById('cRON').value);
+            const eur = parseFloat(document.getElementById('cEUR').value);
+            const usd = parseFloat(document.getElementById('cUSD').value);
+
+            let totalMDL = 0;
+            const assetTotals = {}; // Pentru grafic
+
+            instruments.forEach(inst => {
+                // Calculăm valoarea la zi (ultima lună completată)
+                let lastVal = 0;
+                // Căutăm în spate de la dec-2040 până găsim o valoare
+                for(let y=2040; y>=2024; y--) {
+                    for(let mi=11; mi>=0; mi--) {
+                        const key = `${inst.id}-${y}-${months[mi]}`;
+                        if(allocations[key]) {
+                            lastVal = allocations[key];
+                            break;
+                        }
+                    }
+                    if(lastVal > 0) break;
+                }
+
+                let multiplier = 1;
+                if(inst.currency === 'RON') multiplier = ron;
+                else if(inst.currency === 'EUR') multiplier = eur;
+                else if(inst.currency === 'USD') multiplier = usd;
+
+                const valMDL = lastVal * multiplier;
+                totalMDL += valMDL;
+                assetTotals[inst.type] = (assetTotals[inst.type] || 0) + valMDL;
+            });
+
+            document.getElementById('grandTotalMDL').innerText = totalMDL.toLocaleString(undefined, {minimumFractionDigits: 2});
+            updateSummaryTable(ron, eur, usd);
+            updateChart(assetTotals);
+        }
+
+        function updateSummaryTable(ron, eur, usd) {
+            const container = document.getElementById('summaryTable');
+            let html = `<table class="w-full text-xs text-left">
+                <thead class="bg-slate-50 uppercase text-gray-500">
+                    <tr><th class="p-2">Instrument</th><th>Tip</th><th>Valuta</th><th>Valoare Orig.</th><th class="text-right">Valoare MDL</th></tr>
+                </thead><tbody>`;
+            
+            instruments.forEach(inst => {
+                let lastVal = 0;
+                for(let y=2040; y>=2024; y--) {
+                    for(let mi=11; mi>=0; mi--) {
+                        const key = `${inst.id}-${y}-${months[mi]}`;
+                        if(allocations[key]) { lastVal = allocations[key]; break; }
+                    }
+                    if(lastVal > 0) break;
+                }
+                let curs = inst.currency=='RON'?ron:inst.currency=='EUR'?eur:inst.currency=='USD'?usd:1;
+                html += `<tr class="border-b">
+                    <td class="p-2 font-bold">${inst.name}</td>
+                    <td>${inst.type}</td>
+                    <td>${inst.currency}</td>
+                    <td>${lastVal.toLocaleString()}</td>
+                    <td class="text-right font-bold text-blue-600">${(lastVal*curs).toLocaleString()}</td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            container.innerHTML = html;
+        }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(b => {
+                b.classList.remove('border-blue-600', 'text-blue-600');
+                b.classList.add('text-gray-500');
+            });
+            document.getElementById('tab-' + id).classList.remove('hidden');
+            event.target.classList.add('border-blue-600', 'text-blue-600');
+        }
+
+        function updateChart(data) {
+            const ctx = document.getElementById('chartAllocation').getContext('2d');
+            if(myChart) myChart.destroy();
+            myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: active.map(a => a.nume),
-                    datasets: [{ data: active.map(a => a.suma), backgroundColor: ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#64748b'] }]
-                }
+                    labels: Object.keys(data),
+                    datasets: [{
+                        data: Object.values(data),
+                        backgroundColor: ['#1e293b', '#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6']
+                    }]
+                },
+                options: { plugins: { legend: { position: 'bottom' } } }
             });
         }
-        calcul();
+
+        // INIT
+        initMatrix();
+        updateAll();
     </script>
 </body>
 </html>
