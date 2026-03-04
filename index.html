@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Portofoliu Investiții</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-slate-50 p-4 md:p-10 font-sans">
+    <div class="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow-lg">
+        <div class="flex justify-between items-center mb-10">
+            <h1 class="text-3xl font-extrabold text-slate-800">📈 Portofoliul Meu</h1>
+            <div id="total" class="text-2xl font-bold text-blue-600 bg-blue-50 px-6 py-2 rounded-full">0 MDL</div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 text-center">
+            <div class="p-4 border rounded-xl">
+                <p class="text-xs text-slate-400 uppercase font-bold">1 EUR (MDL)</p>
+                <input type="number" id="eur" value="19.72" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
+            </div>
+            <div class="p-4 border rounded-xl">
+                <p class="text-xs text-slate-400 uppercase font-bold">1 USD (MDL)</p>
+                <input type="number" id="usd" value="16.69" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
+            </div>
+            <div class="p-4 border rounded-xl">
+                <p class="text-xs text-slate-400 uppercase font-bold">1 RON (MDL)</p>
+                <input type="number" id="ron" value="3.88" class="text-xl font-bold w-full text-center outline-none" oninput="calcul()">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div>
+                <table class="w-full text-left">
+                    <thead class="text-slate-400 text-xs uppercase">
+                        <tr><th class="pb-4">Activ</th><th class="pb-4">Valută</th><th class="pb-4">Suma</th></tr>
+                    </thead>
+                    <tbody id="lista" class="text-slate-700">
+                        <!-- Randurile vor fi generate automat -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="flex items-center justify-center">
+                <canvas id="grafic" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const active = [
+            {nume: "TVBETETF (BVB)", valuta: "RON", suma: 10204},
+            {nume: "SNP Petrom", valuta: "RON", suma: 0},
+            {nume: "S&P 500 (SXR8)", valuta: "EUR", suma: 500},
+            {nume: "Titluri Fidelis", valuta: "RON", suma: 2000},
+            {nume: "Bitcoin", valuta: "EUR", suma: 100},
+            {nume: "Cash (MDL)", valuta: "MDL", suma: 1000}
+        ];
+
+        let chart;
+        function calcul() {
+            const e = document.getElementById('eur').value;
+            const u = document.getElementById('usd').value;
+            const r = document.getElementById('ron').value;
+            let totalMDL = 0;
+            const tbody = document.getElementById('lista');
+            tbody.innerHTML = '';
+            
+            active.forEach((a, i) => {
+                let mdl = a.valuta=='RON'? a.suma*r : a.valuta=='EUR'? a.suma*e : a.valuta=='USD'? a.suma*u : a.suma;
+                totalMDL += mdl;
+                tbody.innerHTML += `<tr class="border-t"><td class="py-4 font-bold">${a.nume}</td><td>${a.valuta}</td>
+                <td><input type="number" value="${a.suma}" class="w-20 outline-none focus:bg-yellow-50" oninput="active[${i}].suma=this.value; calcul()"></td></tr>`;
+            });
+
+            document.getElementById('total').innerText = totalMDL.toLocaleString() + " MDL";
+            updateChart();
+        }
+
+        function updateChart() {
+            const ctx = document.getElementById('grafic').getContext('2d');
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: active.map(a => a.nume),
+                    datasets: [{ data: active.map(a => a.suma), backgroundColor: ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#64748b'] }]
+                }
+            });
+        }
+        calcul();
+    </script>
+</body>
+</html>
