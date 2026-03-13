@@ -30,7 +30,6 @@
         .delete-btn { color: #ef4444; opacity: 0; transition: opacity 0.2s; cursor: pointer; }
         tr:hover .delete-btn { opacity: 1; }
         
-        /* Font fix for matrix headers */
         #matrixHead th { font-family: 'Inter', sans-serif; vertical-align: middle; }
     </style>
 </head>
@@ -79,7 +78,7 @@
 
         <section id="tab-summary" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 tracking-widest">Analiză Instrumente</h3>
+                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 tracking-widest">Analiză Instrumente (Sume Totale)</h3>
                 <div id="summaryTable" class="overflow-x-auto text-sm"></div>
             </div>
             <div class="bg-white rounded-3xl shadow-sm border p-8">
@@ -199,18 +198,19 @@
 
             instruments.forEach(inst => {
                 let m = inst.curr==='RON'?ron : inst.curr==='EUR'?eur : inst.curr==='USD'?usd : 1;
-                let lastVal = 0;
-                for(let y=2040; y>=2024; y--) {
-                    for(let mi=11; mi>=0; mi--) {
-                        let v = allocations[`${inst.id}-${y}-${months[mi]}`] || 0;
-                        if(v > 0) { lastVal = v; break; }
-                    }
-                    if(lastVal > 0) break;
-                }
-                let valMDL = lastVal * m;
+                
+                // Calcul TOTAL SUMA ALOCARI pentru Situația la zi
+                let totalInstSum = 0;
+                years.forEach(y => {
+                    months.forEach(mo => {
+                        totalInstSum += (allocations[`${inst.id}-${y}-${mo}`] || 0);
+                    });
+                });
+
+                let valMDL = totalInstSum * m;
                 grandTotalMDL += valMDL;
                 catStats[inst.cat] = (catStats[inst.cat] || 0) + valMDL;
-                listSummary.push({...inst, valMDL, nominal: lastVal});
+                listSummary.push({...inst, valMDL, nominal: totalInstSum});
             });
 
             document.getElementById('topTotal').innerText = grandTotalMDL.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MDL";
@@ -231,17 +231,18 @@
                     let cellTotal = document.getElementById(`total-${inst.id}-${y}`);
                     if(cellTotal) cellTotal.innerText = yearSum.toLocaleString();
                 });
-                let lastV = 0;
-                for(let y=2040; y>=2024; y--) {
-                    for(let mi=11; mi>=0; mi--) {
-                        let v = allocations[`${inst.id}-${y}-${months[mi]}`] || 0;
-                        if(v > 0) { lastV = v; break; }
-                    }
-                    if(lastV > 0) break;
-                }
+
+                // Pentru Preț/Unitate în Matrix, folosim tot TOTAL SUMA / Nr. Active
+                let totalInstSum = 0;
+                years.forEach(y => {
+                    months.forEach(mo => {
+                        totalInstSum += (allocations[`${inst.id}-${y}-${mo}`] || 0);
+                    });
+                });
+
                 let cellPrice = document.getElementById(`price-${inst.id}`);
                 if(cellPrice) {
-                    let p = (inst.qty > 0) ? (lastV / inst.qty).toFixed(2) : "0.00";
+                    let p = (inst.qty > 0) ? (totalInstSum / inst.qty).toFixed(2) : "0.00";
                     cellPrice.innerText = p;
                 }
             });
@@ -249,7 +250,7 @@
 
         function renderSummary(data, total) {
             let html = `<table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black">
-                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Valoare Orig.</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
+                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Suma Totală Alocată</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
                 </thead><tbody>`;
             
             data.filter(x => x.valMDL > 0).sort((a,b) => b.valMDL - a.valMDL).forEach(x => {
@@ -260,8 +261,7 @@
                 <td><div class="flex items-center gap-2"><div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="bg-blue-600 h-full" style="width:${p}%"></div></div><span class="text-[9px] font-black">${p}%</span></div></td></tr>`;
             });
 
-            // Rândul de TOTAL
-            html += `<tr class="bg-slate-50 font-black"><td class="p-5" colspan="4">TOTAL ACTIVE</td>
+            html += `<tr class="bg-slate-50 font-black"><td class="p-5" colspan="4">TOTAL PORTOFOLIU (Sume Investite)</td>
                 <td class="text-right text-blue-700 p-5">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
                 <td>100.00%</td></tr>`;
 
@@ -329,21 +329,18 @@
             let grandT = 0; let catSt = {}; let summ = [];
             instruments.forEach(i => {
                 let m = i.curr==='RON'?ron:i.curr==='EUR'?eur:i.curr==='USD'?usd:1;
-                let lv = 0;
-                for(let yr=2040; yr>=2024; yr--) {
-                    for(let mi=11; mi>=0; mi--) {
-                        let val = allocations[`${i.id}-${yr}-${months[mi]}`] || 0;
-                        if(val > 0) { lv = val; break; }
-                    }
-                    if(lv > 0) break;
-                }
-                grandT += (lv * m);
-                catSt[i.cat] = (catSt[i.cat] || 0) + (lv * m);
-                summ.push({...i, valMDL: (lv * m), nominal: lv});
+                
+                let totalSum = 0;
+                years.forEach(yr => months.forEach(mo => totalSum += (allocations[`${i.id}-${yr}-${mo}`] || 0)));
+                
+                grandT += (totalSum * m);
+                catSt[i.cat] = (catSt[i.cat] || 0) + (totalSum * m);
+                summ.push({...i, valMDL: (totalSum * m), nominal: totalSum});
             });
             document.getElementById('topTotal').innerText = grandT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MDL";
             renderSummary(summ, grandT);
             renderChart(catSt);
+
             let yearSum = 0;
             months.forEach(m => yearSum += (allocations[`${instId}-${year}-${m}`] || 0));
             document.getElementById(`total-${instId}-${year}`).innerText = yearSum.toLocaleString();
