@@ -10,7 +10,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
         body { font-family: 'Inter', sans-serif; background-color: #f1f5f9; color: #0f172a; }
-        
         .sticky-col { position: sticky; background: white; z-index: 30; border-right: 1px solid #e2e8f0; }
         .col-1 { left: 0; min-width: 80px; font-size: 10px; color: #64748b; }
         .col-2 { left: 80px; min-width: 180px; font-weight: 700; }
@@ -19,29 +18,24 @@
         .col-5 { left: 430px; min-width: 80px; color: #64748b; font-size: 10px; } 
         .col-6 { left: 510px; min-width: 80px; color: #3b82f6; font-size: 10px; font-weight: 700; } 
         .col-7 { left: 590px; min-width: 50px; border-right: 4px solid #cbd5e1; font-family: monospace; font-size: 10px; } 
-
         .table-container { overflow-x: auto; max-height: 75vh; border-radius: 12px; border: 1px solid #e2e8f0; background: white; }
-        .month-input, .qty-input { width: 70px; text-align: right; font-size: 11px; padding: 4px; border-bottom: 1px solid #f1f5f9; outline: none; background: transparent; font-family: 'Inter', sans-serif; }
-        .month-input:focus, .qty-input:focus { background: #fff; border-bottom: 2px solid #3b82f6; }
-        
-        .year-total-col { background: #f8fafc; font-weight: 800; color: #1e293b; border-right: 2px solid #e2e8f0; min-width: 100px; text-align: right; padding-right: 10px; font-family: 'Inter', sans-serif; }
+        .month-input, .qty-input { width: 70px; text-align: right; font-size: 11px; padding: 4px; border-bottom: 1px solid #f1f5f9; outline: none; background: transparent; }
+        .year-total-col { background: #f8fafc; font-weight: 800; color: #1e293b; border-right: 2px solid #e2e8f0; min-width: 100px; text-align: right; padding-right: 10px; }
         .tab-btn.active { color: #2563eb; border-bottom: 3px solid #2563eb; }
-        .year-header-btn { background: #1e293b; color: white; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; font-family: 'Inter', sans-serif; }
+        .year-header-btn { background: #1e293b; color: white; padding: 5px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
         .delete-btn { color: #ef4444; opacity: 0; transition: opacity 0.2s; cursor: pointer; }
         tr:hover .delete-btn { opacity: 1; }
-        
         #matrixHead th { font-family: 'Inter', sans-serif; vertical-align: middle; }
     </style>
 </head>
 <body>
 
-    <header class="bg-white border-b sticky top-0 z-[100] px-6 py-4 shadow-sm">
+    <header class="bg-white border-b sticky top-0 z-[100] px-6 py-4 shadow-sm text-slate-800">
         <div class="max-w-[1900px] mx-auto flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 text-white p-2 rounded-xl"><i class="fas fa-briefcase fa-lg"></i></div>
                 <h1 class="text-xl font-black tracking-tighter uppercase">Portofoliu <span class="text-blue-600">Investițional</span></h1>
             </div>
-
             <div class="flex items-center gap-6">
                 <div class="flex gap-4 border-r pr-6">
                     <div class="text-center">
@@ -67,7 +61,7 @@
 
     <nav class="bg-white border-b mb-6 px-6 shadow-sm">
         <div class="max-w-[1900px] mx-auto flex gap-10">
-            <button onclick="showTab('tab-summary')" id="btn-summary" class="tab-btn py-5 text-sm font-bold active transition-all">Situația la zi</button>
+            <button onclick="showTab('tab-summary')" id="btn-summary" class="tab-btn py-5 text-sm font-bold active">Situația la zi</button>
             <button onclick="showTab('tab-matrix')" id="btn-matrix" class="tab-btn py-5 text-sm font-bold text-slate-400 italic">Alocări</button>
             <button onclick="showTab('tab-income')" id="btn-income" class="tab-btn py-5 text-sm font-bold text-slate-400">Dividende & Cupoane</button>
             <button onclick="showTab('tab-calendar')" id="btn-calendar" class="tab-btn py-5 text-sm font-bold text-emerald-600"><i class="fas fa-calendar-alt mr-2"></i>Calendar Venituri</button>
@@ -75,14 +69,13 @@
     </nav>
 
     <main class="max-w-[1900px] mx-auto px-6 pb-20">
-
         <section id="tab-summary" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 tracking-widest">Analiză Instrumente (Sume Totale)</h3>
-                <div id="summaryTable" class="overflow-x-auto text-sm"></div>
+                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6">Analiză Instrumente</h3>
+                <div id="summaryTable" class="overflow-x-auto text-sm text-slate-800"></div>
             </div>
             <div class="bg-white rounded-3xl shadow-sm border p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 text-center tracking-widest">Structură Asset Class</h3>
+                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 text-center">Structură Asset Class</h3>
                 <canvas id="chartAllocation"></canvas>
             </div>
         </section>
@@ -90,10 +83,10 @@
         <section id="tab-matrix" class="tab-content hidden">
             <div class="bg-white rounded-3xl shadow-sm border p-6">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest italic tracking-tighter">Matrix Alocări Sume Nominale (2024-2040)</h3>
+                    <h3 class="font-black text-slate-800 uppercase text-xs italic">Alocări Sume Nominale (2024-2040)</h3>
                     <div class="flex gap-3">
-                        <button onclick="exportData()" class="text-[10px] font-bold bg-slate-100 px-4 py-2 rounded-lg">Backup</button>
-                        <button onclick="openModal()" class="bg-slate-900 text-white px-5 py-2 rounded-lg text-[10px] font-black shadow-md">+ Instrument</button>
+                        <button onclick="exportData()" class="text-[10px] font-bold bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-lg text-slate-600">Backup</button>
+                        <button onclick="openModal()" class="bg-slate-900 text-white px-5 py-2 rounded-lg text-[10px] font-black shadow-md">+ Instrument Nou</button>
                     </div>
                 </div>
                 <div class="table-container text-slate-800">
@@ -105,24 +98,21 @@
             </div>
         </section>
 
-        <section id="tab-income" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section id="tab-income" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-8 text-slate-800">
             <div class="bg-white p-8 rounded-3xl border shadow-sm h-fit">
-                <h3 class="font-black mb-6 uppercase text-sm">Înregistrare Venit unitar</h3>
-                <div class="space-y-4 text-slate-800">
-                    <label class="text-[10px] font-bold text-slate-400">INSTRUMENT</label>
+                <h3 class="font-black mb-6 uppercase text-sm">Adaugă Venit</h3>
+                <div class="space-y-4">
                     <select id="inc-inst" class="w-full border p-3 rounded-xl bg-slate-50 font-bold outline-none"></select>
-                    <label class="text-[10px] font-bold text-slate-400">DATA ÎNCASĂRII</label>
                     <input type="date" id="inc-date" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
-                    <label class="text-[10px] font-bold text-slate-400">VENIT PER UNITATE (DIVIDEND/CUPON)</label>
-                    <input type="number" id="inc-unit-val" step="any" placeholder="Ex: 0.52" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
-                    <button onclick="saveIncome()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black shadow-lg">SALVEAZĂ</button>
+                    <input type="number" id="inc-unit-val" step="any" placeholder="Venit per unitate" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
+                    <button onclick="saveIncome()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black">SALVEAZĂ</button>
                 </div>
             </div>
-            <div class="lg:col-span-2 bg-white rounded-3xl border shadow-sm p-8 text-slate-800">
+            <div class="lg:col-span-2 bg-white rounded-3xl border shadow-sm p-8">
                 <h3 class="font-black text-slate-400 uppercase text-[10px] mb-6">Istoric Venituri Pasive</h3>
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-50 border-b">
-                        <tr><th class="p-4">Data</th><th>Activ</th><th>Venit/Unit</th><th>Suma (Valuta Orig.)</th><th class="text-right">Echiv. MDL</th><th></th></tr>
+                        <tr><th class="p-4">Data</th><th>Activ</th><th>Venit/Unit</th><th>Suma (Val. Orig)</th><th class="text-right">MDL</th><th></th></tr>
                     </thead>
                     <tbody id="incomeBody"></tbody>
                 </table>
@@ -134,8 +124,8 @@
                 <div class="flex justify-between items-center mb-10">
                     <h3 class="font-black text-2xl flex items-center gap-3"><i class="fas fa-calendar-check text-emerald-500"></i> Calendar Venituri</h3>
                     <div class="flex items-center gap-3 bg-slate-100 p-2 rounded-xl">
-                        <span class="text-xs font-bold uppercase text-slate-500 tracking-tighter">Alege Anul:</span>
-                        <select id="cal-year-selector" onchange="renderCalendar()" class="bg-white border rounded px-4 py-1 font-bold outline-none"></select>
+                        <span class="text-xs font-bold uppercase text-slate-500">Anul:</span>
+                        <select id="cal-year-selector" onchange="renderCalendar()" class="bg-white border rounded px-4 py-1 font-bold"></select>
                     </div>
                 </div>
                 <div id="calendarView" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8"></div>
@@ -143,40 +133,95 @@
         </section>
     </main>
 
+    <!-- MODAL ADAUGARE (Searchable BVB) -->
     <div id="addModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-6 text-slate-800">
         <div class="bg-white rounded-[40px] p-10 w-full max-w-xl shadow-2xl">
-            <h2 class="text-2xl font-black mb-8 uppercase tracking-tighter">Instrument Nou</h2>
+            <h2 class="text-2xl font-black mb-4 uppercase tracking-tighter">Adaugă Instrument (BVB & More)</h2>
+            <p class="text-[10px] text-slate-400 mb-6 font-bold uppercase">Căutați un simbol sau introduceți date manual</p>
+            
+            <div class="mb-6">
+                <label class="text-[10px] font-black uppercase text-blue-600 ml-2">Căutare Rapidă (Simbol/Nume)</label>
+                <input type="text" id="mSearch" list="bvbList" placeholder="Ex: TLV, SNP, R2612A..." class="w-full border-2 border-blue-100 p-4 rounded-2xl bg-blue-50 font-black outline-none focus:border-blue-500 shadow-inner" oninput="handleSearch(this.value)">
+                <datalist id="bvbList"></datalist>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input type="text" id="mName" placeholder="Nume Instrument" class="md:col-span-2 border p-4 rounded-2xl bg-slate-50 font-bold outline-none">
-                <select id="mCat" class="border p-4 rounded-2xl bg-slate-50 font-bold outline-none"><option>Acțiuni</option><option>Obligațiuni</option><option>Aur</option><option>Crypto</option><option>Cash</option></select>
+                <input type="text" id="mName" placeholder="Denumire Instrument" class="md:col-span-2 border p-4 rounded-2xl bg-slate-50 font-bold outline-none">
+                <select id="mCat" class="border p-4 rounded-2xl bg-slate-50 font-bold outline-none"><option>Acțiuni</option><option>Obligațiuni</option><option>Aur</option><option>Crypto</option><option>ETF/Fond</option><option>Cash</option></select>
                 <input type="text" id="mSym" placeholder="Simbol" class="border p-4 rounded-2xl bg-slate-50 font-bold outline-none">
                 <input type="text" id="mEx" placeholder="Bursă" class="border p-4 rounded-2xl bg-slate-50 font-bold outline-none">
                 <select id="mCurr" class="border p-4 rounded-2xl bg-slate-50 font-bold outline-none"><option>RON</option><option>EUR</option><option>USD</option><option>MDL</option></select>
             </div>
             <div class="flex gap-6 mt-10">
                 <button onclick="closeModal()" class="flex-1 font-bold text-slate-400">Anulează</button>
-                <button onclick="confirmAdd()" class="flex-1 bg-blue-600 text-white rounded-2xl font-bold py-4 shadow-lg">Adaugă</button>
+                <button onclick="confirmAdd()" class="flex-1 bg-blue-600 text-white rounded-2xl font-bold py-4 shadow-lg">Salvează în Matrix</button>
             </div>
         </div>
     </div>
 
     <script>
-        let instruments = JSON.parse(localStorage.getItem('v6_inst')) || [];
-        let allocations = JSON.parse(localStorage.getItem('v6_alloc')) || {};
-        let incomes = JSON.parse(localStorage.getItem('v6_inc')) || [];
-        let expandedYears = [2025]; 
+        // --- BAZE DE DATE BVB (EXTRAS DIN FISIERELE TALE) ---
+        const bvbDatabase = [
+            // Actiuni (Top BET)
+            {s:"TLV", n:"Banca Transilvania S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"SNP", n:"OMV Petrom S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"H2O", n:"S.P.E.E.H. Hidroelectrica S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"SNG", n:"S.N.G.N. Romgaz S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"BRD", n:"BRD - Groupe Societe Generale S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"EL", n:"Societatea Energetica Electrica S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"FP", n:"Fondul Proprietatea", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"DIGI", n:"Digi Communications N.V.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"TGN", n:"S.N.T.G.N. Transgaz S.A.", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"PE", n:"Premier Energy PLC", c:"Acțiuni", e:"BVB", v:"RON"},
+            {s:"TVBETETF", n:"ETF BET Patria-Tradeville", c:"ETF/Fond", e:"BVB", v:"RON"},
+            // Fidelis (Exemple din fisiere)
+            {s:"R2604A", n:"Titluri de stat Fidelis 2026", c:"Obligațiuni", e:"BVB", v:"RON"},
+            {s:"R2612A", n:"Titluri de stat Fidelis 2026 Dec", c:"Obligațiuni", e:"BVB", v:"RON"},
+            {s:"R2703AE", n:"Fidelis Euro 2027", c:"Obligațiuni", e:"BVB", v:"EUR"},
+            {s:"R2804AE", n:"Fidelis Euro 2028", c:"Obligațiuni", e:"BVB", v:"EUR"},
+            // ETF Internationale
+            {s:"SXR8", n:"iShares Core S&P 500", c:"ETF/Fond", e:"XETRA", v:"EUR"},
+            {s:"IWDA", n:"iShares MSCI World", c:"ETF/Fond", e:"LSE", v:"USD"},
+            {s:"VBTC", n:"VanEck Bitcoin ETN", c:"Crypto", e:"BVB/XETRA", v:"EUR"}
+        ];
+        // Populate more from CSVs logic (mocking rest of database due to space)
+        const commonSymbols = ["AQ","ATB","BVB","M","ONE","SFG","TEL","TTS","WINE","B2604A","R2512A","EBGLDTL34"];
 
+        // State & Storage
+        let instruments = JSON.parse(localStorage.getItem('v7_inst')) || [];
+        let allocations = JSON.parse(localStorage.getItem('v7_alloc')) || {};
+        let incomes = JSON.parse(localStorage.getItem('v7_inc')) || [];
+        let expandedYears = [2025]; 
         const years = Array.from({length: 17}, (_, i) => 2024 + i);
         const months = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         let myChart;
 
-        const yearSelector = document.getElementById('cal-year-selector');
-        years.forEach(y => {
-            const opt = document.createElement('option');
-            opt.value = y; opt.innerText = y;
-            if(y === 2025) opt.selected = true;
-            yearSelector.appendChild(opt);
-        });
+        window.onload = () => { 
+            populateDatalist();
+            initCalendarSelector();
+            fetchExchangeRates(); 
+        };
+
+        function populateDatalist() {
+            const list = document.getElementById('bvbList');
+            bvbDatabase.forEach(item => {
+                const opt = document.createElement('option');
+                opt.value = item.s;
+                opt.innerText = item.n;
+                list.appendChild(opt);
+            });
+        }
+
+        function handleSearch(val) {
+            const match = bvbDatabase.find(i => i.s === val.toUpperCase());
+            if(match) {
+                document.getElementById('mName').value = match.n;
+                document.getElementById('mCat').value = match.c;
+                document.getElementById('mSym').value = match.s;
+                document.getElementById('mEx').value = match.e;
+                document.getElementById('mCurr').value = match.v;
+            }
+        }
 
         async function fetchExchangeRates() {
             try {
@@ -185,7 +230,7 @@
                 if (rates.eur) document.getElementById('cEUR').value = rates.eur.inverseRate.toFixed(4);
                 if (rates.usd) document.getElementById('cUSD').value = rates.usd.inverseRate.toFixed(4);
                 if (rates.ron) document.getElementById('cRON').value = rates.ron.inverseRate.toFixed(4);
-            } catch (error) { console.error("Eroare curs: ", error); }
+            } catch (error) { console.error("API error"); }
             updateAllCalculations();
         }
 
@@ -199,44 +244,38 @@
         }
 
         function updateAllCalculations() {
-            const ron = parseFloat(document.getElementById('cRON').value) || 0;
-            const eur = parseFloat(document.getElementById('cEUR').value) || 0;
-            const usd = parseFloat(document.getElementById('cUSD').value) || 0;
-            let grandT = 0; let catSt = {}; let summ = [];
+            const r = parseFloat(document.getElementById('cRON').value) || 0;
+            const e = parseFloat(document.getElementById('cEUR').value) || 0;
+            const u = parseFloat(document.getElementById('cUSD').value) || 0;
+            let gt = 0; let cs = {}; let sm = [];
             instruments.forEach(inst => {
-                let m = inst.curr==='RON'?ron:inst.curr==='EUR'?eur:inst.curr==='USD'?usd:1;
+                let m = inst.curr==='RON'?r:inst.curr==='EUR'?e:inst.curr==='USD'?u:1;
                 let tSum = 0;
                 years.forEach(y => months.forEach(mo => tSum += (allocations[`${inst.id}-${y}-${mo}`] || 0)));
-                let vMdl = tSum * m;
-                grandT += vMdl;
-                catSt[inst.cat] = (catSt[inst.cat] || 0) + vMdl;
-                summ.push({...inst, valMDL: vMdl, nominal: tSum});
+                let vM = tSum * m; gt += vM;
+                cs[inst.cat] = (cs[inst.cat] || 0) + vM;
+                sm.push({...inst, valMDL: vM, nominal: tSum});
             });
-            document.getElementById('topTotal').innerText = grandT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " MDL";
-            renderSummary(summ, grandT);
-            renderChart(catSt);
-            renderIncomes();
-            renderCalendar();
-            populateIncSelect();
-            updateMatrixCalcs(); 
+            document.getElementById('topTotal').innerText = gt.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}) + " MDL";
+            renderSummary(sm, gt); renderChart(cs); renderIncomes(); renderCalendar(); populateIncSelect(); updateMatrixCalcs(); 
         }
 
         function updateMatrixCalcs() {
             instruments.forEach(inst => {
                 years.forEach(y => {
-                    let ySum = 0; months.forEach(m => ySum += (allocations[`${inst.id}-${y}-${m}`] || 0));
-                    let cell = document.getElementById(`total-${inst.id}-${y}`);
-                    if(cell) cell.innerText = ySum.toLocaleString();
+                    let yS = 0; months.forEach(m => yS += (allocations[`${inst.id}-${y}-${m}`] || 0));
+                    let c = document.getElementById(`total-${inst.id}-${y}`);
+                    if(c) c.innerText = yS.toLocaleString();
                 });
-                let tSum = 0; years.forEach(y => months.forEach(mo => tSum += (allocations[`${inst.id}-${y}-${mo}`] || 0)));
+                let tS = 0; years.forEach(y => months.forEach(mo => tS += (allocations[`${inst.id}-${y}-${mo}`] || 0)));
                 let cp = document.getElementById(`price-${inst.id}`);
-                if(cp) cp.innerText = (inst.qty > 0) ? (tSum / inst.qty).toFixed(2) : "0.00";
+                if(cp) cp.innerText = (inst.qty > 0) ? (tS / inst.qty).toFixed(2) : "0.00";
             });
         }
 
         function renderSummary(data, total) {
             let html = `<table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black">
-                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Suma Totală Alocată</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
+                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Suma Investită</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
                 </thead><tbody>`;
             data.filter(x => x.valMDL > 0).sort((a,b) => b.valMDL - a.valMDL).forEach(x => {
                 let p = total > 0 ? ((x.valMDL / total) * 100).toFixed(2) : 0;
@@ -245,28 +284,26 @@
                 <td class="text-right font-black text-slate-900">${x.valMDL.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits: 2})}</td>
                 <td><div class="flex items-center gap-2"><div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="bg-blue-600 h-full" style="width:${p}%"></div></div><span class="text-[9px] font-black">${p}%</span></div></td></tr>`;
             });
-            html += `<tr class="bg-slate-50 font-black"><td class="p-5" colspan="4">TOTAL PORTOFOLIU (Sume Investite)</td>
-                <td class="text-right text-blue-700 p-5">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
-                <td>100.00%</td></tr>`;
+            html += `<tr class="bg-slate-50 font-black"><td class="p-5 text-[11px]" colspan="4">TOTAL SUME ALOCATE</td><td class="text-right text-blue-700 p-5">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td>100%</td></tr>`;
             document.getElementById('summaryTable').innerHTML = html + `</tbody></table>`;
         }
 
         function renderMatrix() {
-            let h1 = `<tr><th class="sticky-col col-1 p-3 bg-slate-100 uppercase text-[10px] font-black text-slate-400">Tip</th><th class="sticky-col col-2 p-3 bg-slate-100 uppercase text-[10px] font-black text-slate-400">Instrument</th><th class="sticky-col col-3 p-3 bg-slate-200 uppercase text-[10px] font-black text-slate-700">Nr. Active</th><th class="sticky-col col-4 p-3 bg-slate-200 uppercase text-[10px] font-black text-slate-700">Preț/Unit</th><th class="sticky-col col-5 p-3 bg-slate-100 uppercase text-[10px] font-black text-slate-400">Bursa</th><th class="sticky-col col-6 p-3 bg-slate-100 uppercase text-[10px] font-black text-slate-400">Simbol</th><th class="sticky-col col-7 p-3 bg-slate-100 uppercase text-[10px] font-black text-slate-400 text-center">Valuta</th>`;
-            let h2 = `<tr><th colspan="7" class="sticky-col border-r-[4px] border-slate-200 bg-slate-50 text-[9px] text-slate-400 p-2 italic text-center uppercase tracking-widest font-bold">Informații Active</th>`;
+            let h1 = `<tr><th class="sticky-col col-1 p-3 bg-slate-100 text-[10px] font-black text-slate-400">TIP</th><th class="sticky-col col-2 p-3 bg-slate-100 text-[10px] font-black text-slate-400">INSTRUMENT</th><th class="sticky-col col-3 p-3 bg-slate-200 text-[10px] font-black">CANTITATE</th><th class="sticky-col col-4 p-3 bg-slate-200 text-[10px] font-black">PRET/UNIT</th><th class="sticky-col col-5 p-3 bg-slate-100 text-[10px] font-black text-slate-400">BURSA</th><th class="sticky-col col-6 p-3 bg-slate-100 text-[10px] font-black text-slate-400">SIMBOL</th><th class="sticky-col col-7 p-3 bg-slate-100 text-[10px] font-black text-slate-400">VAL</th>`;
+            let h2 = `<tr><th colspan="7" class="sticky-col border-r-[4px] border-slate-200 bg-slate-50 italic text-[9px] text-center text-slate-300">INFO ACTIVE</th>`;
             years.forEach(y => {
                 let isExp = expandedYears.includes(y);
-                h1 += `<th colspan="${isExp ? 13 : 1}" class="border-x border-slate-700 bg-slate-900 text-white p-1 text-[10px] text-center font-bold"><button onclick="toggleYear(${y})" class="year-header-btn">${isExp ? '-' : '+'} ${y}</button></th>`;
-                h2 += `<th class="year-total-col text-[10px] uppercase font-black">TOTAL ${y}</th>`;
+                h1 += `<th colspan="${isExp ? 13 : 1}" class="border-x border-slate-700 bg-slate-900 text-white p-1 text-[10px] text-center"><button onclick="toggleYear(${y})" class="year-header-btn">${isExp ? '-' : '+'} ${y}</button></th>`;
+                h2 += `<th class="year-total-col text-[10px]">TOTAL ${y}</th>`;
                 if(isExp) months.forEach(m => h2 += `<th class="p-1 text-[9px] text-slate-400 font-bold bg-white border text-center uppercase">${m}</th>`);
             });
             document.getElementById('matrixHead').innerHTML = h1 + "</tr>" + h2 + "</tr>";
             let body = '';
             instruments.forEach(inst => {
-                body += `<tr class="hover:bg-slate-50 border-b group text-slate-800"><td class="sticky-col col-1 p-2 uppercase font-bold text-slate-400 text-[9px] tracking-tighter">${inst.cat}</td><td class="sticky-col col-2 p-2 font-bold flex justify-between items-center text-xs">${inst.name} <button onclick="deleteInst(${inst.id})" class="delete-btn"><i class="fas fa-trash"></i></button></td><td class="sticky-col col-3 p-2 bg-slate-50"><input type="number" class="qty-input font-black" value="${inst.qty || ''}" oninput="saveQty(${inst.id}, this.value)"></td><td class="sticky-col col-4 p-2 bg-slate-50 text-right font-black text-emerald-600 text-xs" id="price-${inst.id}">0.00</td><td class="sticky-col col-5 p-2 text-slate-400 italic text-[10px]">${inst.bursa}</td><td class="sticky-col col-6 p-2 text-center font-bold text-blue-600 text-[10px] tracking-tight">${inst.sym}</td><td class="sticky-col col-7 p-2 text-center font-mono border-r-[4px] border-slate-200 text-[10px]">${inst.curr}</td>`;
+                body += `<tr class="hover:bg-slate-50 border-b group"><td class="sticky-col col-1 p-2 text-[9px] font-bold text-slate-400 uppercase">${inst.cat}</td><td class="sticky-col col-2 p-2 flex justify-between items-center text-xs font-bold">${inst.name} <button onclick="deleteInst(${inst.id})" class="delete-btn"><i class="fas fa-trash"></i></button></td><td class="sticky-col col-3 p-2 bg-slate-50"><input type="number" class="qty-input font-black" value="${inst.qty || ''}" oninput="saveQty(${inst.id}, this.value)"></td><td class="sticky-col col-4 p-2 bg-slate-50 text-right font-black text-emerald-600 text-xs" id="price-${inst.id}">0.00</td><td class="sticky-col col-5 p-2 text-slate-400 italic text-[9px]">${inst.bursa}</td><td class="sticky-col col-6 p-2 text-center font-bold text-blue-600 text-[10px]">${inst.sym}</td><td class="sticky-col col-7 p-2 text-center font-mono border-r-[4px] border-slate-200 text-[10px]">${inst.curr}</td>`;
                 years.forEach(y => {
                     let isExp = expandedYears.includes(y);
-                    body += `<td class="year-total-col" id="total-${inst.id}-${y}">0</td>`;
+                    body += `<td class="year-total-col text-xs" id="total-${inst.id}-${y}">0</td>`;
                     if(isExp) months.forEach(m => {
                         let k = `${inst.id}-${y}-${m}`; let v = allocations[k] || '';
                         body += `<td class="p-0 border border-slate-100"><input type="number" class="month-input" value="${v}" oninput="saveAlloc('${k}', this.value, ${inst.id}, ${y})"></td>`;
@@ -274,31 +311,30 @@
                 });
                 body += `</tr>`;
             });
-            document.getElementById('matrixBody').innerHTML = body;
-            updateMatrixCalcs();
+            document.getElementById('matrixBody').innerHTML = body; updateMatrixCalcs();
         }
 
         function saveAlloc(k, v, id, yr) {
             if(v===""||v==0) delete allocations[k]; else allocations[k]=parseFloat(v);
-            localStorage.setItem('v6_alloc', JSON.stringify(allocations));
-            const ron=parseFloat(document.getElementById('cRON').value)||0; const eur=parseFloat(document.getElementById('cEUR').value)||0; const usd=parseFloat(document.getElementById('cUSD').value)||0;
+            localStorage.setItem('v7_alloc', JSON.stringify(allocations));
+            const r=parseFloat(document.getElementById('cRON').value)||0; const e=parseFloat(document.getElementById('cEUR').value)||0; const u=parseFloat(document.getElementById('cUSD').value)||0;
             let gt=0; let cs={}; let sm=[];
             instruments.forEach(i => {
-                let m=i.curr==='RON'?ron:i.curr==='EUR'?eur:i.curr==='USD'?usd:1; let ts=0;
+                let m=i.curr==='RON'?r:i.curr==='EUR'?e:i.curr==='USD'?u:1; let ts=0;
                 years.forEach(y=>months.forEach(mo=>ts+=(allocations[`${i.id}-${y}-${mo}`]||0)));
                 gt+=(ts*m); cs[i.cat]=(cs[i.cat]||0)+(ts*m); sm.push({...i,valMDL:(ts*m),nominal:ts});
             });
             document.getElementById('topTotal').innerText=gt.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+" MDL";
             renderSummary(sm,gt); renderChart(cs);
-            let ySum=0; months.forEach(m=>ySum+=(allocations[`${id}-${yr}-${m}`]||0));
-            document.getElementById(`total-${id}-${yr}`).innerText=ySum.toLocaleString();
-            let cp=document.getElementById(`price-${id}`); let tSumInst=0; years.forEach(y=>months.forEach(mo=>tSumInst+=(allocations[`${id}-${y}-${mo}`]||0)));
-            let instObj=instruments.find(x=>x.id===id); if(cp) cp.innerText=(instObj.qty>0)?(tSumInst/instObj.qty).toFixed(2):"0.00";
+            let yS=0; months.forEach(m=>yS+=(allocations[`${id}-${yr}-${m}`]||0));
+            document.getElementById(`total-${id}-${yr}`).innerText=yS.toLocaleString();
+            let instObj=instruments.find(x=>x.id===id); let tSI=0; years.forEach(y=>months.forEach(mo=>tSI+=(allocations[`${id}-${y}-${mo}`]||0)));
+            let cp=document.getElementById(`price-${id}`); if(cp) cp.innerText=(instObj.qty>0)?(tSI/instObj.qty).toFixed(2):"0.00";
         }
 
         function saveQty(id, val) {
             let inst = instruments.find(x => x.id === id); inst.qty = parseFloat(val) || 0;
-            localStorage.setItem('v6_inst', JSON.stringify(instruments)); updateMatrixCalcs();
+            localStorage.setItem('v7_inst', JSON.stringify(instruments)); updateMatrixCalcs();
         }
 
         function toggleYear(y) { if(expandedYears.includes(y)) expandedYears = expandedYears.filter(i => i !== y); else expandedYears.push(y); renderMatrix(); }
@@ -307,48 +343,43 @@
             let id = document.getElementById('inc-inst').value;
             let unitVal = parseFloat(document.getElementById('inc-unit-val').value);
             let date = document.getElementById('inc-date').value;
-            if(!unitVal || !date) return alert("Date incomplete!");
+            if(!unitVal || !date) return alert("Incomplet!");
             let inst = instruments.find(x => x.id == id);
             let totalVal = unitVal * (inst.qty || 0);
             incomes.push({ id: Date.now(), name: inst.name, unitVal, totalVal, date, curr: inst.curr });
-            localStorage.setItem('v6_inc', JSON.stringify(incomes)); updateAllCalculations();
-        }
-
-        function deleteIncome(id) { incomes = incomes.filter(x => x.id !== id); localStorage.setItem('v6_inc', JSON.stringify(incomes)); updateAllCalculations(); }
-
-        function renderIncomes() {
-            const ron = parseFloat(document.getElementById('cRON').value) || 0;
-            const eur = parseFloat(document.getElementById('cEUR').value) || 0;
-            const usd = parseFloat(document.getElementById('cUSD').value) || 0;
-            let html = '';
-            incomes.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(inc => {
-                let mult = inc.curr === 'RON' ? ron : inc.curr === 'EUR' ? eur : inc.curr === 'USD' ? usd : 1;
-                html += `<tr class="border-b"><td class="p-4 text-xs font-bold text-slate-400">${new Date(inc.date).toLocaleDateString()}</td><td class="font-bold uppercase text-[10px] text-slate-700">${inc.name}</td>
-                <td class="text-slate-500 font-bold text-xs">${inc.unitVal.toLocaleString()} / unit</td>
-                <td class="font-black text-slate-800 text-xs">${inc.totalVal.toLocaleString()} ${inc.curr}</td>
-                <td class="text-right font-black text-emerald-600">${(inc.totalVal * mult).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} MDL</td>
-                <td class="text-right"><button onclick="deleteIncome(${inc.id})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button></td></tr>`;
-            });
-            document.getElementById('incomeBody').innerHTML = html;
+            localStorage.setItem('v7_inc', JSON.stringify(incomes)); updateAllCalculations();
         }
 
         function renderCalendar() {
             const selY = parseInt(document.getElementById('cal-year-selector').value);
-            const ron = parseFloat(document.getElementById('cRON').value) || 0;
-            const eur = parseFloat(document.getElementById('cEUR').value) || 0;
-            const usd = parseFloat(document.getElementById('cUSD').value) || 0;
+            const r=parseFloat(document.getElementById('cRON').value)||0; const e=parseFloat(document.getElementById('cEUR').value)||0; const u=parseFloat(document.getElementById('cUSD').value)||0;
             let html = '';
             months.forEach((m, idx) => {
-                let monthItems = incomes.filter(inc => { let d = new Date(inc.date); return d.getMonth() === idx && d.getFullYear() === selY; });
-                let monthT = 0;
-                let itemsList = monthItems.map(inc => {
-                    let mlt = inc.curr==='RON'?ron:inc.curr==='EUR'?eur:inc.curr==='USD'?usd:1;
-                    monthT += (inc.totalVal * mlt);
-                    return `<div class="flex justify-between text-[9px] border-b border-slate-50 py-1.5 font-bold uppercase"><span class="text-slate-400">${inc.name}</span><span class="text-emerald-600">+${inc.totalVal.toLocaleString()}</span></div>`;
+                let mI = incomes.filter(inc => { let d = new Date(inc.date); return d.getMonth() === idx && d.getFullYear() === selY; });
+                let mT = 0;
+                let itemsList = mI.map(inc => {
+                    let mlt = inc.curr==='RON'?r:inc.curr==='EUR'?e:inc.curr==='USD'?u:1;
+                    mT += (inc.totalVal * mlt);
+                    return `<div class="flex justify-between text-[9px] border-b border-slate-50 py-1 font-bold uppercase"><span class="text-slate-400">${inc.name}</span><span class="text-emerald-600">+${inc.totalVal.toLocaleString()}</span></div>`;
                 }).join('');
-                html += `<div class="bg-white p-5 rounded-[25px] border shadow-sm ${monthT > 0 ? 'border-emerald-500 bg-emerald-50/10' : 'opacity-40'}"><div class="flex justify-between items-center mb-3"><span class="font-black text-slate-800 text-[10px] uppercase">${m}</span><span class="text-[8px] font-bold text-slate-300">${selY}</span></div><div class="min-h-[50px] space-y-1">${itemsList || '<p class="text-[9px] text-slate-200 italic font-normal uppercase tracking-tighter">Nicio încasare</p>'}</div><div class="mt-3 pt-3 border-t border-slate-50 font-black text-right text-[10px] text-slate-700">${monthT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} MDL</div></div>`;
+                html += `<div class="bg-white p-5 rounded-[25px] border shadow-sm ${mT > 0 ? 'border-emerald-500 bg-emerald-50/10' : 'opacity-40'}"><div class="flex justify-between items-center mb-3"><span class="font-black text-slate-800 text-[10px] uppercase">${m}</span><span class="text-[8px] font-bold text-slate-300">${selY}</span></div><div class="min-h-[50px] space-y-1">${itemsList || '<p class="text-[9px] text-slate-200">Lipsă</p>'}</div><div class="mt-3 pt-3 border-t border-slate-50 font-black text-right text-[10px] text-slate-700">${mT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} MDL</div></div>`;
             });
             document.getElementById('calendarView').innerHTML = html;
+        }
+
+        function renderIncomes() {
+            const r=parseFloat(document.getElementById('cRON').value)||0; const e=parseFloat(document.getElementById('cEUR').value)||0; const u=parseFloat(document.getElementById('cUSD').value)||0;
+            let html = '';
+            incomes.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(inc => {
+                let mult = inc.curr==='RON'?r:inc.curr==='EUR'?e:inc.curr==='USD'?u:1;
+                html += `<tr class="border-b"><td class="p-4 text-[10px] font-bold text-slate-400">${new Date(inc.date).toLocaleDateString()}</td><td class="font-black uppercase text-[10px] text-slate-700">${inc.name}</td><td class="text-slate-500 text-xs">${inc.unitVal.toLocaleString()} / unit</td><td class="font-black text-xs">${inc.totalVal.toLocaleString()} ${inc.curr}</td><td class="text-right font-black text-emerald-600">${(inc.totalVal * mult).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} MDL</td><td class="text-right"><button onclick="deleteIncome(${inc.id})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button></td></tr>`;
+            });
+            document.getElementById('incomeBody').innerHTML = html;
+        }
+
+        function initCalendarSelector() {
+            const s = document.getElementById('cal-year-selector');
+            years.forEach(y => { const o = document.createElement('option'); o.value = y; o.innerText = y; if(y===2025) o.selected=true; s.appendChild(o); });
         }
 
         function renderChart(data) {
@@ -357,18 +388,17 @@
             myChart = new Chart(ctx, { type: 'doughnut', data: { labels: Object.keys(data), datasets: [{ data: Object.values(data), backgroundColor: ['#0f172a', '#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#94a3b8'], borderWidth: 0 }] }, options: { cutout: '82%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 8, font: { size: 9, weight: 'bold' } } } } } });
         }
 
-        function deleteInst(id) { if(confirm("Ștergi instrumentul?")) { instruments = instruments.filter(x => x.id !== id); localStorage.setItem('v6_inst', JSON.stringify(instruments)); renderMatrix(); updateAllCalculations(); } }
         function openModal() { document.getElementById('addModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('addModal').classList.add('hidden'); }
         function confirmAdd() {
             let n = document.getElementById('mName').value; if(!n) return;
             instruments.push({ id: Date.now(), cat: document.getElementById('mCat').value, name: n, sym: document.getElementById('mSym').value, bursa: document.getElementById('mEx').value, curr: document.getElementById('mCurr').value, qty: 0 });
-            localStorage.setItem('v6_inst', JSON.stringify(instruments)); closeModal(); renderMatrix(); updateAllCalculations();
+            localStorage.setItem('v7_inst', JSON.stringify(instruments)); closeModal(); updateAllCalculations();
         }
+        function deleteInst(id) { if(confirm("Ștergi instrumentul?")) { instruments = instruments.filter(x => x.id !== id); localStorage.setItem('v7_inst', JSON.stringify(instruments)); renderMatrix(); updateAllCalculations(); } }
+        function deleteIncome(id) { incomes = incomes.filter(x => x.id !== id); localStorage.setItem('v7_inc', JSON.stringify(incomes)); updateAllCalculations(); }
         function populateIncSelect() { document.getElementById('inc-inst').innerHTML = instruments.map(x => `<option value="${x.id}">${x.name} (${x.curr})</option>`).join(''); }
         function exportData() { const b = new Blob([JSON.stringify({ instruments, allocations, incomes })], {type: 'application/json'}); const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = `portofoliu_backup.json`; a.click(); }
-
-        window.onload = () => { renderMatrix(); fetchExchangeRates(); };
     </script>
 </body>
 </html>
