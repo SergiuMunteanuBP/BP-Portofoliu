@@ -14,18 +14,19 @@
         .sticky-col { position: sticky; background: white; z-index: 30; border-right: 1px solid #e2e8f0; }
         .col-1 { left: 0; min-width: 80px; font-size: 10px; color: #64748b; }
         .col-2 { left: 80px; min-width: 180px; font-weight: 700; }
-        .col-3 { left: 260px; min-width: 80px; color: #3b82f6; font-size: 11px; }
-        .col-4 { left: 340px; min-width: 80px; color: #64748b; font-size: 11px; }
-        .col-5 { left: 420px; min-width: 60px; border-right: 4px solid #cbd5e1; font-family: monospace; }
+        .col-3 { left: 260px; min-width: 80px; font-weight: 700; color: #1e293b; } /* Nr. Actiuni */
+        .col-4 { left: 340px; min-width: 90px; color: #059669; font-size: 11px; font-weight: 800; } /* Pret/Unit */
+        .col-5 { left: 430px; min-width: 80px; color: #64748b; font-size: 10px; } /* Bursa */
+        .col-6 { left: 510px; min-width: 80px; color: #3b82f6; font-size: 10px; font-weight: 700; } /* Simbol */
+        .col-7 { left: 590px; min-width: 50px; border-right: 4px solid #cbd5e1; font-family: monospace; font-size: 10px; } /* Valuta */
 
         .table-container { overflow-x: auto; max-height: 75vh; border-radius: 12px; border: 1px solid #e2e8f0; background: white; }
-        .month-input { width: 70px; text-align: right; font-size: 11px; padding: 4px; border-bottom: 1px solid #f1f5f9; outline: none; background: transparent; }
-        .month-input:focus { background: #fff; border-bottom: 2px solid #3b82f6; }
+        .month-input, .qty-input { width: 70px; text-align: right; font-size: 11px; padding: 4px; border-bottom: 1px solid #f1f5f9; outline: none; background: transparent; }
+        .month-input:focus, .qty-input:focus { background: #fff; border-bottom: 2px solid #3b82f6; }
         
         .year-total-col { background: #f8fafc; font-weight: 800; color: #1e293b; border-right: 2px solid #e2e8f0; min-width: 100px; text-align: right; padding-right: 10px; }
         .tab-btn.active { color: #2563eb; border-bottom: 3px solid #2563eb; }
         .year-header-btn { background: #1e293b; color: white; padding: 5px 10px; border-radius: 6px; font-size: 11px; }
-        
         .delete-btn { color: #ef4444; opacity: 0; transition: opacity 0.2s; cursor: pointer; }
         tr:hover .delete-btn { opacity: 1; }
     </style>
@@ -75,11 +76,11 @@
 
         <section id="tab-summary" class="tab-content grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="lg:col-span-2 bg-white rounded-3xl shadow-sm border p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6">Analiză Instrumente</h3>
+                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 tracking-widest">Analiză Instrumente</h3>
                 <div id="summaryTable" class="overflow-x-auto text-sm"></div>
             </div>
             <div class="bg-white rounded-3xl shadow-sm border p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 text-center">Structură Asset Class</h3>
+                <h3 class="font-black text-slate-400 uppercase text-[11px] mb-6 text-center tracking-widest">Structură Asset Class</h3>
                 <canvas id="chartAllocation"></canvas>
             </div>
         </section>
@@ -87,7 +88,7 @@
         <section id="tab-matrix" class="tab-content hidden">
             <div class="bg-white rounded-3xl shadow-sm border p-6">
                 <div class="flex flex-wrap justify-between items-center mb-6 gap-4">
-                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest italic">Matrix Alocări Sume Nominale (2024-2040)</h3>
+                    <h3 class="font-black text-slate-800 uppercase text-xs tracking-widest italic tracking-tighter">Matrix Alocări Sume Nominale (2024-2040)</h3>
                     <div class="flex gap-3">
                         <button onclick="exportData()" class="text-[10px] font-bold bg-slate-100 px-4 py-2 rounded-lg">Backup</button>
                         <button onclick="openModal()" class="bg-slate-900 text-white px-5 py-2 rounded-lg text-[10px] font-black shadow-md">+ Instrument</button>
@@ -104,19 +105,23 @@
 
         <section id="tab-income" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div class="bg-white p-8 rounded-3xl border shadow-sm h-fit">
-                <h3 class="font-black mb-6 uppercase text-sm">Adaugă Venit</h3>
+                <h3 class="font-black mb-6 uppercase text-sm">Înregistrare Venit unitar</h3>
                 <div class="space-y-4">
+                    <label class="text-[10px] font-bold text-slate-400">INSTRUMENT</label>
                     <select id="inc-inst" class="w-full border p-3 rounded-xl bg-slate-50 font-bold outline-none"></select>
+                    <label class="text-[10px] font-bold text-slate-400">DATA ÎNCASĂRII</label>
                     <input type="date" id="inc-date" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
-                    <input type="number" id="inc-val" placeholder="Suma" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
-                    <button onclick="saveIncome()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black shadow-lg">SALVEAZĂ</button>
+                    <label class="text-[10px] font-bold text-slate-400">VENIT PER UNITATE (DIVIDEND/CUPON)</label>
+                    <input type="number" id="inc-unit-val" step="any" placeholder="Ex: 0.52" class="w-full border p-3 rounded-xl bg-slate-50 font-bold">
+                    <p class="text-[9px] text-slate-400 italic">* Suma totală se va calcula automat: Venit per unitate x Nr. Active din Alocări.</p>
+                    <button onclick="saveIncome()" class="w-full bg-blue-600 text-white p-4 rounded-xl font-black shadow-lg">CALCULEAZĂ ȘI SALVEAZĂ</button>
                 </div>
             </div>
             <div class="lg:col-span-2 bg-white rounded-3xl border shadow-sm p-8">
-                <h3 class="font-black text-slate-400 uppercase text-[10px] mb-6">Istoric Venituri</h3>
+                <h3 class="font-black text-slate-400 uppercase text-[10px] mb-6">Istoric Venituri Pasive</h3>
                 <table class="w-full text-sm text-left">
                     <thead class="bg-slate-50 border-b">
-                        <tr><th class="p-4">Data</th><th>Activ</th><th>Suma Orig.</th><th class="text-right">MDL</th><th></th></tr>
+                        <tr><th class="p-4">Data</th><th>Activ</th><th>Venit/Unit</th><th>Suma Totală</th><th class="text-right">MDL</th><th></th></tr>
                     </thead>
                     <tbody id="incomeBody"></tbody>
                 </table>
@@ -130,11 +135,7 @@
                     <div class="flex items-center gap-3 bg-slate-100 p-2 rounded-xl">
                         <span class="text-xs font-bold uppercase text-slate-500 tracking-tighter">Alege Anul:</span>
                         <select id="cal-year-selector" onchange="renderCalendar()" class="bg-white border rounded px-4 py-1 font-bold outline-none">
-                            <option value="2024">2024</option><option value="2025" selected>2025</option><option value="2026">2026</option><option value="2027">2027</option>
-                            <option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option>
-                            <option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
-                            <option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option>
-                            <option value="2040">2040</option>
+                            <!-- JS will populate up to 2040 -->
                         </select>
                     </div>
                 </div>
@@ -144,7 +145,7 @@
     </main>
 
     <div id="addModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[200] flex items-center justify-center p-6">
-        <div class="bg-white rounded-[40px] p-10 w-full max-w-xl shadow-2xl">
+        <div class="bg-white rounded-[40px] p-10 w-full max-w-xl shadow-2xl text-slate-800">
             <h2 class="text-2xl font-black mb-8 uppercase tracking-tighter">Instrument Nou</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input type="text" id="mName" placeholder="Nume Instrument" class="md:col-span-2 border p-4 rounded-2xl bg-slate-50 font-bold outline-none">
@@ -161,24 +162,32 @@
     </div>
 
     <script>
-        let instruments = JSON.parse(localStorage.getItem('v5_inst')) || [
-            { id: 1, cat: "Acțiuni", name: "FDI ETF BET Patria", sym: "TVBETETF", bursa: "BVB", curr: "RON" },
-            { id: 2, cat: "Acțiuni", name: "OMV Petrom", sym: "SNP", bursa: "BVB", curr: "RON" }
+        let instruments = JSON.parse(localStorage.getItem('v6_inst')) || [
+            { id: 1, cat: "Acțiuni", name: "FDI ETF BET Patria", sym: "TVBETETF", bursa: "BVB", curr: "RON", qty: 0 },
+            { id: 2, cat: "Acțiuni", name: "OMV Petrom", sym: "SNP", bursa: "BVB", curr: "RON", qty: 0 }
         ];
-        let allocations = JSON.parse(localStorage.getItem('v5_alloc')) || {};
-        let incomes = JSON.parse(localStorage.getItem('v5_inc')) || [];
+        let allocations = JSON.parse(localStorage.getItem('v6_alloc')) || {};
+        let incomes = JSON.parse(localStorage.getItem('v6_inc')) || [];
         let expandedYears = [2025]; 
 
         const years = Array.from({length: 17}, (_, i) => 2024 + i);
         const months = ["Ian", "Feb", "Mar", "Apr", "Mai", "Iun", "Iul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         let myChart;
 
+        // Populate Year Selector up to 2040
+        const yearSelector = document.getElementById('cal-year-selector');
+        years.forEach(y => {
+            const opt = document.createElement('option');
+            opt.value = y; opt.innerText = y;
+            if(y === 2025) opt.selected = true;
+            yearSelector.appendChild(opt);
+        });
+
         function showTab(id) {
             document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active', 'text-slate-900'));
             document.getElementById(id).classList.remove('hidden');
             document.getElementById('btn-' + id.split('-')[1]).classList.add('active');
-            
             if(id === 'tab-matrix') renderMatrix();
             updateAllCalculations();
         }
@@ -195,7 +204,6 @@
             instruments.forEach(inst => {
                 let m = inst.curr==='RON'?ron : inst.curr==='EUR'?eur : inst.curr==='USD'?usd : 1;
                 let lastVal = 0;
-                
                 for(let y=2040; y>=2024; y--) {
                     for(let mi=11; mi>=0; mi--) {
                         let v = allocations[`${inst.id}-${y}-${months[mi]}`] || 0;
@@ -203,7 +211,6 @@
                     }
                     if(lastVal > 0) break;
                 }
-
                 let valMDL = lastVal * m;
                 grandTotalMDL += valMDL;
                 catStats[inst.cat] = (catStats[inst.cat] || 0) + valMDL;
@@ -211,29 +218,44 @@
             });
 
             document.getElementById('topTotal').innerText = grandTotalMDL.toLocaleString(undefined, {minimumFractionDigits: 2}) + " MDL";
-            
             renderSummary(listSummary, grandTotalMDL);
             renderChart(catStats);
             renderIncomes();
             renderCalendar();
             populateIncSelect();
-            updateYearTotalsOnly();
+            updateMatrixCalcs(); 
         }
 
-        function updateYearTotalsOnly() {
+        function updateMatrixCalcs() {
             instruments.forEach(inst => {
+                // Total pe an
                 years.forEach(y => {
                     let yearSum = 0;
                     months.forEach(m => yearSum += (allocations[`${inst.id}-${y}-${m}`] || 0));
-                    let cell = document.getElementById(`total-${inst.id}-${y}`);
-                    if(cell) cell.innerText = yearSum.toLocaleString();
+                    let cellTotal = document.getElementById(`total-${inst.id}-${y}`);
+                    if(cellTotal) cellTotal.innerText = yearSum.toLocaleString();
                 });
+
+                // Pret per Unitate
+                let lastV = 0;
+                for(let y=2040; y>=2024; y--) {
+                    for(let mi=11; mi>=0; mi--) {
+                        let v = allocations[`${inst.id}-${y}-${months[mi]}`] || 0;
+                        if(v > 0) { lastV = v; break; }
+                    }
+                    if(lastV > 0) break;
+                }
+                let cellPrice = document.getElementById(`price-${inst.id}`);
+                if(cellPrice) {
+                    let p = (inst.qty > 0) ? (lastV / inst.qty).toFixed(2) : "0.00";
+                    cellPrice.innerText = p;
+                }
             });
         }
 
         function renderSummary(data, total) {
             let html = `<table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black">
-                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Valoare Orig.</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
+                <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Ultima Alocare</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
                 </thead><tbody>`;
             data.filter(x => x.valMDL > 0).sort((a,b) => b.valMDL - a.valMDL).forEach(x => {
                 let p = total > 0 ? ((x.valMDL / total) * 100).toFixed(2) : 0;
@@ -246,8 +268,8 @@
         }
 
         function renderMatrix() {
-            let h1 = `<tr><th class="sticky-col col-1 p-3 bg-slate-100">Tip</th><th class="sticky-col col-2 p-3 bg-slate-100">Instrument</th><th class="sticky-col col-3 p-3 bg-slate-100">Bursa</th><th class="sticky-col col-4 p-3 bg-slate-100 text-center">Simbol</th><th class="sticky-col col-5 p-3 bg-slate-100 text-center">Valuta</th>`;
-            let h2 = `<tr><th colspan="5" class="sticky-col border-r-[4px] border-slate-200 bg-slate-50"></th>`;
+            let h1 = `<tr><th class="sticky-col col-1 p-3 bg-slate-100">Tip</th><th class="sticky-col col-2 p-3 bg-slate-100">Instrument</th><th class="sticky-col col-3 p-3 bg-slate-200">Nr. Active</th><th class="sticky-col col-4 p-3 bg-slate-200">Preț/Unit</th><th class="sticky-col col-5 p-3 bg-slate-100">Bursa</th><th class="sticky-col col-6 p-3 bg-slate-100 text-center">Simbol</th><th class="sticky-col col-7 p-3 bg-slate-100 text-center">Valuta</th>`;
+            let h2 = `<tr><th colspan="7" class="sticky-col border-r-[4px] border-slate-200 bg-slate-50 text-[9px] text-slate-400 p-1 italic text-center uppercase tracking-widest">Date Instrument</th>`;
             
             years.forEach(y => {
                 let isExp = expandedYears.includes(y);
@@ -261,16 +283,18 @@
 
             let body = '';
             instruments.forEach(inst => {
-                body += `<tr class="hover:bg-slate-50 border-b group">
-                    <td class="sticky-col col-1 p-2 text-[9px] uppercase font-bold text-slate-400">${inst.cat}</td>
-                    <td class="sticky-col col-2 p-2 flex justify-between items-center text-xs font-bold">${inst.name} <button onclick="deleteInst(${inst.id})" class="delete-btn"><i class="fas fa-trash"></i></button></td>
-                    <td class="sticky-col col-3 p-2 text-[10px] text-slate-400 italic">${inst.bursa}</td>
-                    <td class="sticky-col col-4 p-2 text-center font-bold text-blue-600 text-[10px]">${inst.sym}</td>
-                    <td class="sticky-col col-5 p-2 text-center font-mono text-[10px] border-r-[4px] border-slate-200">${inst.curr}</td>`;
+                body += `<tr class="hover:bg-slate-50 border-b group text-[11px]">
+                    <td class="sticky-col col-1 p-2 uppercase font-bold text-slate-400 text-[9px]">${inst.cat}</td>
+                    <td class="sticky-col col-2 p-2 font-bold flex justify-between items-center">${inst.name} <button onclick="deleteInst(${inst.id})" class="delete-btn"><i class="fas fa-trash"></i></button></td>
+                    <td class="sticky-col col-3 p-2 bg-slate-50"><input type="number" class="qty-input font-black" value="${inst.qty || ''}" oninput="saveQty(${inst.id}, this.value)"></td>
+                    <td class="sticky-col col-4 p-2 bg-slate-50 text-right font-black text-emerald-600" id="price-${inst.id}">0.00</td>
+                    <td class="sticky-col col-5 p-2 text-slate-400 italic">${inst.bursa}</td>
+                    <td class="sticky-col col-6 p-2 text-center font-bold text-blue-600">${inst.sym}</td>
+                    <td class="sticky-col col-7 p-2 text-center font-mono border-r-[4px] border-slate-200">${inst.curr}</td>`;
                 
                 years.forEach(y => {
                     let isExp = expandedYears.includes(y);
-                    body += `<td class="year-total-col text-xs" id="total-${inst.id}-${y}">0</td>`;
+                    body += `<td class="year-total-col" id="total-${inst.id}-${y}">0</td>`;
                     if(isExp) {
                         months.forEach(m => {
                             let k = `${inst.id}-${y}-${m}`;
@@ -282,45 +306,46 @@
                 body += `</tr>`;
             });
             document.getElementById('matrixBody').innerHTML = body;
-            updateYearTotalsOnly();
+            updateMatrixCalcs();
         }
 
         function saveAlloc(k, v, instId, year) {
             if(v === "" || v == 0) delete allocations[k];
             else allocations[k] = parseFloat(v);
-            localStorage.setItem('v5_alloc', JSON.stringify(allocations));
+            localStorage.setItem('v6_alloc', JSON.stringify(allocations));
             
+            // Update live without full matrix re-render
+            updateMatrixCalcs();
+            
+            // Update Summary & Header
             const ron = parseFloat(document.getElementById('cRON').value) || 0;
             const eur = parseFloat(document.getElementById('cEUR').value) || 0;
             const usd = parseFloat(document.getElementById('cUSD').value) || 0;
-            
-            let grandTotalMDL = 0;
-            let catStats = {};
-            let listSummary = [];
-
-            instruments.forEach(inst => {
-                let multiplier = inst.curr==='RON'?ron : inst.curr==='EUR'?eur : inst.curr==='USD'?usd : 1;
-                let lastVal = 0;
+            let grandT = 0; let catSt = {}; let summ = [];
+            instruments.forEach(i => {
+                let m = i.curr==='RON'?ron:i.curr==='EUR'?eur:i.curr==='USD'?usd:1;
+                let lv = 0;
                 for(let yr=2040; yr>=2024; yr--) {
                     for(let mi=11; mi>=0; mi--) {
-                        let val = allocations[`${inst.id}-${yr}-${months[mi]}`] || 0;
-                        if(val > 0) { lastVal = val; break; }
+                        let val = allocations[`${i.id}-${yr}-${months[mi]}`] || 0;
+                        if(val > 0) { lv = val; break; }
                     }
-                    if(lastVal > 0) break;
+                    if(lv > 0) break;
                 }
-                let valMDL = lastVal * multiplier;
-                grandTotalMDL += valMDL;
-                catStats[inst.cat] = (catStats[inst.cat] || 0) + valMDL;
-                listSummary.push({...inst, valMDL, nominal: lastVal});
+                grandT += (lv * m);
+                catSt[i.cat] = (catSt[i.cat] || 0) + (lv * m);
+                summ.push({...i, valMDL: (lv * m), nominal: lv});
             });
+            document.getElementById('topTotal').innerText = grandT.toLocaleString(undefined, {minimumFractionDigits: 2}) + " MDL";
+            renderSummary(summ, grandT);
+            renderChart(catSt);
+        }
 
-            document.getElementById('topTotal').innerText = grandTotalMDL.toLocaleString(undefined, {minimumFractionDigits: 2}) + " MDL";
-            renderSummary(listSummary, grandTotalMDL);
-            renderChart(catStats);
-
-            let yearSum = 0;
-            months.forEach(m => yearSum += (allocations[`${instId}-${year}-${m}`] || 0));
-            document.getElementById(`total-${instId}-${year}`).innerText = yearSum.toLocaleString();
+        function saveQty(id, val) {
+            let inst = instruments.find(x => x.id === id);
+            inst.qty = parseFloat(val) || 0;
+            localStorage.setItem('v6_inst', JSON.stringify(instruments));
+            updateMatrixCalcs();
         }
 
         function toggleYear(y) {
@@ -331,18 +356,21 @@
 
         function saveIncome() {
             let id = document.getElementById('inc-inst').value;
-            let val = parseFloat(document.getElementById('inc-val').value);
+            let unitVal = parseFloat(document.getElementById('inc-unit-val').value);
             let date = document.getElementById('inc-date').value;
-            if(!val || !date) return alert("Date incomplete!");
+            if(!unitVal || !date) return alert("Date incomplete!");
+            
             let inst = instruments.find(x => x.id == id);
-            incomes.push({ id: Date.now(), name: inst.name, val, date, curr: inst.curr });
-            localStorage.setItem('v5_inc', JSON.stringify(incomes));
+            let totalVal = unitVal * (inst.qty || 0); // Logic: unit price x qty
+            
+            incomes.push({ id: Date.now(), name: inst.name, unitVal, totalVal, date, curr: inst.curr });
+            localStorage.setItem('v6_inc', JSON.stringify(incomes));
             updateAllCalculations();
         }
 
         function deleteIncome(id) {
             incomes = incomes.filter(x => x.id !== id);
-            localStorage.setItem('v5_inc', JSON.stringify(incomes));
+            localStorage.setItem('v6_inc', JSON.stringify(incomes));
             updateAllCalculations();
         }
 
@@ -353,8 +381,10 @@
             let html = '';
             incomes.sort((a,b) => new Date(b.date) - new Date(a.date)).forEach(inc => {
                 let mult = inc.curr === 'RON' ? ron : inc.curr === 'EUR' ? eur : inc.curr === 'USD' ? usd : 1;
-                html += `<tr class="border-b"><td class="p-4 text-xs font-bold">${new Date(inc.date).toLocaleDateString()}</td><td class="font-bold uppercase text-[10px] text-slate-700">${inc.name}</td>
-                <td class="text-slate-500 font-bold text-xs">${inc.val.toLocaleString()} ${inc.curr}</td><td class="text-right font-black text-emerald-600">${(inc.val * mult).toLocaleString()} MDL</td>
+                html += `<tr class="border-b"><td class="p-4 text-xs font-bold text-slate-400">${new Date(inc.date).toLocaleDateString()}</td><td class="font-bold uppercase text-[10px] text-slate-700">${inc.name}</td>
+                <td class="text-slate-500 font-bold text-xs">${inc.unitVal.toLocaleString()} / unit</td>
+                <td class="font-black text-slate-800 text-xs">${inc.totalVal.toLocaleString()} ${inc.curr}</td>
+                <td class="text-right font-black text-emerald-600">${(inc.totalVal * mult).toLocaleString()} MDL</td>
                 <td class="text-right"><button onclick="deleteIncome(${inc.id})" class="text-red-300 hover:text-red-500"><i class="fas fa-trash"></i></button></td></tr>`;
             });
             document.getElementById('incomeBody').innerHTML = html;
@@ -374,12 +404,12 @@
                 let monthT = 0;
                 let itemsList = monthItems.map(inc => {
                     let mlt = inc.curr==='RON'?ron:inc.curr==='EUR'?eur:inc.curr==='USD'?usd:1;
-                    monthT += (inc.val * mlt);
-                    return `<div class="flex justify-between text-[9px] border-b border-slate-50 py-1.5 font-bold uppercase"><span class="text-slate-400">${inc.name}</span><span class="text-emerald-600">+${inc.val.toLocaleString()}</span></div>`;
+                    monthT += (inc.totalVal * mlt);
+                    return `<div class="flex justify-between text-[9px] border-b border-slate-50 py-1.5 font-bold uppercase"><span class="text-slate-400">${inc.name}</span><span class="text-emerald-600">+${inc.totalVal.toLocaleString()}</span></div>`;
                 }).join('');
                 html += `<div class="bg-white p-5 rounded-[25px] border shadow-sm ${monthT > 0 ? 'border-emerald-500 bg-emerald-50/10' : 'opacity-40'}">
                     <div class="flex justify-between items-center mb-3"><span class="font-black text-slate-800 text-[10px] uppercase">${m}</span><span class="text-[8px] font-bold text-slate-300">${selY}</span></div>
-                    <div class="min-h-[50px] space-y-1">${itemsList || '<p class="text-[9px] text-slate-200 italic">Fără venituri</p>'}</div>
+                    <div class="min-h-[50px] space-y-1">${itemsList || '<p class="text-[9px] text-slate-200 italic font-normal uppercase tracking-tighter">Nicio încasare</p>'}</div>
                     <div class="mt-3 pt-3 border-t border-slate-50 font-black text-right text-[10px] text-slate-700">${monthT.toLocaleString()} MDL</div>
                 </div>`;
             });
@@ -406,18 +436,16 @@
         function deleteInst(id) {
             if(confirm("Ștergi instrumentul și toate datele?")) {
                 instruments = instruments.filter(x => x.id !== id);
-                localStorage.setItem('v5_inst', JSON.stringify(instruments));
-                renderMatrix();
-                updateAllCalculations();
+                localStorage.setItem('v6_inst', JSON.stringify(instruments));
+                renderMatrix(); updateAllCalculations();
             }
         }
-
         function openModal() { document.getElementById('addModal').classList.remove('hidden'); }
         function closeModal() { document.getElementById('addModal').classList.add('hidden'); }
         function confirmAdd() {
             let n = document.getElementById('mName').value; if(!n) return;
-            instruments.push({ id: Date.now(), cat: document.getElementById('mCat').value, name: n, sym: document.getElementById('mSym').value, bursa: document.getElementById('mEx').value, curr: document.getElementById('mCurr').value });
-            localStorage.setItem('v5_inst', JSON.stringify(instruments));
+            instruments.push({ id: Date.now(), cat: document.getElementById('mCat').value, name: n, sym: document.getElementById('mSym').value, bursa: document.getElementById('mEx').value, curr: document.getElementById('mCurr').value, qty: 0 });
+            localStorage.setItem('v6_inst', JSON.stringify(instruments));
             closeModal(); renderMatrix(); updateAllCalculations();
         }
         function populateIncSelect() { document.getElementById('inc-inst').innerHTML = instruments.map(x => `<option value="${x.id}">${x.name}</option>`).join(''); }
