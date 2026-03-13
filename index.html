@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portofoliu Investițional Propriu</title>
+    <title>Portofoliu Investițional</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,7 +36,7 @@
         <div class="max-w-[1900px] mx-auto flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="bg-slate-900 text-white p-2 rounded-xl"><i class="fas fa-briefcase fa-lg"></i></div>
-                <h1 class="text-xl font-black tracking-tighter uppercase">Portofoliu <span class="text-blue-600">Investițional Propriu</span></h1>
+                <h1 class="text-xl font-black tracking-tighter uppercase">Portofoliu <span class="text-blue-600">Investițional</span></h1>
             </div>
 
             <div class="flex items-center gap-6">
@@ -131,6 +131,10 @@
                         <span class="text-xs font-bold uppercase text-slate-500 tracking-tighter">Alege Anul:</span>
                         <select id="cal-year-selector" onchange="renderCalendar()" class="bg-white border rounded px-4 py-1 font-bold outline-none">
                             <option value="2024">2024</option><option value="2025" selected>2025</option><option value="2026">2026</option><option value="2027">2027</option>
+                            <option value="2028">2028</option><option value="2029">2029</option><option value="2030">2030</option><option value="2031">2031</option>
+                            <option value="2032">2032</option><option value="2033">2033</option><option value="2034">2034</option><option value="2035">2035</option>
+                            <option value="2036">2036</option><option value="2037">2037</option><option value="2038">2038</option><option value="2039">2039</option>
+                            <option value="2040">2040</option>
                         </select>
                     </div>
                 </div>
@@ -175,12 +179,10 @@
             document.getElementById(id).classList.remove('hidden');
             document.getElementById('btn-' + id.split('-')[1]).classList.add('active');
             
-            // Re-randăm matricea doar când intrăm pe tab-ul Alocări pentru a asigura structura corectă
             if(id === 'tab-matrix') renderMatrix();
             updateAllCalculations();
         }
 
-        // --- CALCULE ȘI ACTUALIZĂRI ---
         function updateAllCalculations() {
             const ron = parseFloat(document.getElementById('cRON').value) || 0;
             const eur = parseFloat(document.getElementById('cEUR').value) || 0;
@@ -194,7 +196,6 @@
                 let m = inst.curr==='RON'?ron : inst.curr==='EUR'?eur : inst.curr==='USD'?usd : 1;
                 let lastVal = 0;
                 
-                // Căutăm ultima valoare nominală
                 for(let y=2040; y>=2024; y--) {
                     for(let mi=11; mi>=0; mi--) {
                         let v = allocations[`${inst.id}-${y}-${months[mi]}`] || 0;
@@ -216,7 +217,7 @@
             renderIncomes();
             renderCalendar();
             populateIncSelect();
-            updateYearTotalsOnly(); // Actualizăm doar coloanele de total an fără re-render matrix
+            updateYearTotalsOnly();
         }
 
         function updateYearTotalsOnly() {
@@ -230,7 +231,6 @@
             });
         }
 
-        // --- RENDER COMPONENTE ---
         function renderSummary(data, total) {
             let html = `<table class="w-full text-left"><thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-black">
                 <tr><th class="p-5">Instrument</th><th>Simbol</th><th class="text-right">Valoare Orig.</th><th>Valuta</th><th class="text-right p-5 text-blue-600">Echivalent MDL</th><th>Pondere %</th></tr>
@@ -285,13 +285,11 @@
             updateYearTotalsOnly();
         }
 
-        // --- FUNCȚII ACȚIUNI ---
         function saveAlloc(k, v, instId, year) {
             if(v === "" || v == 0) delete allocations[k];
             else allocations[k] = parseFloat(v);
             localStorage.setItem('v5_alloc', JSON.stringify(allocations));
             
-            // Calculăm header-ul și tab-ul 1, dar NU facem re-render la Matrix (ca să nu pierdem focusul)
             const ron = parseFloat(document.getElementById('cRON').value) || 0;
             const eur = parseFloat(document.getElementById('cEUR').value) || 0;
             const usd = parseFloat(document.getElementById('cUSD').value) || 0;
@@ -320,7 +318,6 @@
             renderSummary(listSummary, grandTotalMDL);
             renderChart(catStats);
 
-            // Actualizăm doar celula de total an din rândul curent
             let yearSum = 0;
             months.forEach(m => yearSum += (allocations[`${instId}-${year}-${m}`] || 0));
             document.getElementById(`total-${instId}-${year}`).innerText = yearSum.toLocaleString();
